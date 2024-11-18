@@ -44,6 +44,12 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24">
       <h1 className="text-4xl font-bold mb-8">Sitemap Subset Generator</h1>
+      <p className="mb-8 text-center text-gray-600">
+        Easily generate smaller, manageable sitemaps from large XML files. Input
+        your sitemap URL, set a subset size for each content category, and let
+        the tool select the required number of URLs for indexing—perfect for
+        search sandboxes with URL limits.
+      </p>
       <form onSubmit={handleSubmit} className="w-full max-w-md space-y-4">
         <div>
           <label
