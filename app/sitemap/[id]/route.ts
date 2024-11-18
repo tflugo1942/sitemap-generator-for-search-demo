@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
 
-const SITEMAP_DIR = path.join(process.cwd(), 'public', 'generated_sitemaps');
+const SITEMAP_DIR = path.join('/tmp', 'generated_sitemaps');
 
 // Define dynamic route handler
 export async function GET(

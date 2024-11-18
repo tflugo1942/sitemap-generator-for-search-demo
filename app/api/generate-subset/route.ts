@@ -8,7 +8,7 @@ interface SitemapUrl {
   [key: string]: string | undefined;
 }
 
-const SITEMAP_DIR = path.join(process.cwd(), 'public', 'generated_sitemaps');
+const SITEMAP_DIR = path.join('/tmp', 'generated_sitemaps');
 
 function determineContentType(url: string): string {
   const urlObj = new URL(url);
