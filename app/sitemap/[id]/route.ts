@@ -4,11 +4,12 @@ import path from 'path';
 
 const SITEMAP_DIR = path.join(process.cwd(), 'public', 'generated_sitemaps');
 
+// Define dynamic route handler
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-): Promise<Response> {
-  const { id } = params;
+    request: NextRequest,
+    context: { params: Promise<{ id: string }> }
+  ): Promise<Response> {
+  const { id } = await context.params; // Extract 'id' from context.params
   const filePath = path.join(SITEMAP_DIR, `${id}.xml`);
 
   try {
@@ -25,8 +26,3 @@ export async function GET(
     return new Response('Sitemap not found', { status: 404 });
   }
 }
-
-// Add this type declaration to resolve the type error
-export type RouteSegment = {
-  params: { id: string };
-};
