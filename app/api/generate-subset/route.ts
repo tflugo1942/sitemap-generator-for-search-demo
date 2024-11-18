@@ -9,7 +9,7 @@ interface SitemapUrl {
   [key: string]: string | undefined;
 }
 
-const GITHUB_API_URL = 'https://api.github.com/repos/medkrimi/sitemap-generator-for-search-demo/sitemaps'; // Replace with your repo URL
+const GITHUB_API_URL = 'https://api.github.com/repos/medkrimi/sitemap-generator-for-search-demo/docs'; // Replace with your repo URL
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN; // Replace with your GitHub personal access token
 
 // Ensure the directory exists for temporary storage, in case you want to test locally
@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
       filePath,
       totalUrls: urls.length,
       subsetSize: subsetUrls.length,
-      githubUrl: `https://medkrimi.github.io/sitemaps/${filePath}`, // Replace with the GitHub Pages URL
+      githubUrl: `https://medkrimi.github.io/${filePath}`, // Replace with the GitHub Pages URL
     });
   } catch (error) {
     console.error('Error processing sitemap:', error);
