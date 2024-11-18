@@ -2,17 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { XMLParser, XMLBuilder } from 'fast-xml-parser';
 import { promises as fs } from 'fs';
 import path from 'path';
-import fetch from 'node-fetch';
 
 interface SitemapUrl {
   loc: string;
   [key: string]: string | undefined;
 }
 
-const GITHUB_API_URL = 'https://api.github.com/repos/medkrimi/sitemap-generator-for-search-demo/docs'; // Replace with your repo URL
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN; // Replace with your GitHub personal access token
-
-// Ensure the directory exists for temporary storage, in case you want to test locally
 const SITEMAP_DIR = path.join('/tmp', 'generated_sitemaps');
 
 function determineContentType(url: string): string {
@@ -35,31 +30,6 @@ function determineContentType(url: string): string {
 
   // If no specific content type is found, use the first part of the path
   return pathParts[0] || 'other';
-}
-
-async function uploadToGitHub(sitemapXml: string, filePath: string) {
-  // Get base64 encoded content for the file
-  const encodedContent = Buffer.from(sitemapXml).toString('base64');
-
-  // Create the API request to upload the file to GitHub
-  const response = await fetch(GITHUB_API_URL + `/${filePath}`, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${GITHUB_TOKEN}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      message: `Add generated sitemap ${filePath}`,
-      content: encodedContent,
-      branch: 'main', // Replace with your desired branch
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`GitHub upload failed: ${response.statusText}`);
-  }
-
-  return response.json();
 }
 
 export async function POST(request: NextRequest) {
@@ -114,25 +84,21 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    // Generate a unique file name for the sitemap
+    // Generate a unique ID for this sitemap
     const sitemapId = Date.now().toString();
-    const filePath = `${sitemapId}.xml`;
-
-    // Optionally, write the sitemap to local filesystem (if needed for testing)
+    
+    // Ensure the directory exists
     await fs.mkdir(SITEMAP_DIR, { recursive: true });
-    const localFilePath = path.join(SITEMAP_DIR, filePath);
-    await fs.writeFile(localFilePath, newSitemap);
 
-    // Upload to GitHub
-    await uploadToGitHub(newSitemap, filePath);
+    // Write the sitemap to a file
+    const filePath = path.join(SITEMAP_DIR, `${sitemapId}.xml`);
+    await fs.writeFile(filePath, newSitemap);
 
-    return NextResponse.json({
-      success: true,
+    return NextResponse.json({ 
+      success: true, 
       sitemapId,
-      filePath,
       totalUrls: urls.length,
-      subsetSize: subsetUrls.length,
-      githubUrl: `https://medkrimi.github.io/${filePath}`, // Replace with the GitHub Pages URL
+      subsetSize: subsetUrls.length
     });
   } catch (error) {
     console.error('Error processing sitemap:', error);
